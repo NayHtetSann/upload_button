@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates>
+    <t t-name="upload_button.ListView.Buttons" t-inherit="web.ListView.Buttons" t-inherit-mode="primary">
+        <xpath expr="//div[hasclass('o_list_buttons')]" position="inside">
+            <t t-call="upload_button.PurchaseViewUploadButton"/>
+        </xpath>
+    </t>
+    <t t-name="upload_button.PurchaseViewUploadButton">
+        <FileUploader
+            acceptedFileExtensions="props.acceptedFileExtensions"
+            fileUploadClass="'account_file_uploader'"
+            multiUpload="true"
+            onUploaded.bind="onFileUploaded"
+            onUploadComplete.bind="onUploadComplete">
+            <t t-set-slot="toggler">
+                <button type="button" class="btn btn-secondary o_button_upload_bill">
+                    Upload
+                </button>
+            </t>
+            <t t-slot="default"/>
+        </FileUploader>
+    </t>
+</templates>

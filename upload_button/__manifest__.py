@@ -3,7 +3,7 @@
 
 {
     'name': 'Purchase Upload Button',
-    'version': '17.0.0.1',
+    'version': '18.0.0.1',
     'category': 'Inventory/Purchase',
     'author': 'NHS',
     'summary': 'upload button in list',

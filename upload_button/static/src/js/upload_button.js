@@ -31,27 +31,34 @@ export class PurchaseListController extends ListController {
     }
 
     async onUploadComplete() {
-        const action = await this.orm.call("purchase.order", "create_document_from_attachment", ["", this.attachmentIdsToProcess], {
-            context: { ...this.extraContext, ...this.env.searchModel.context },
-        });
-        this.attachmentIdsToProcess = [];
+        let action;
+        try {
+            action = await this.orm.call(
+                "purchase.order",
+                "create_document_from_attachment",
+                ["", this.attachmentIdsToProcess],
+                { context: { ...this.extraContext, ...this.env.searchModel.context } }
+            );
+        } finally {
+            // ensures attachments are cleared on success as well as on error
+            this.attachmentIdsToProcess = [];
+        }
         if (action.context && action.context.notifications) {
-            for (let [file, msg] of Object.entries(action.context.notifications)) {
-                this.notification.add(
-                    msg,
-                    {
-                        title: file,
-                        type: "info",
-                        sticky: true,
-                    });
+            for (const [file, msg] of Object.entries(action.context.notifications)) {
+                this.notification.add(msg, {
+                    title: file,
+                    type: "info",
+                    sticky: true,
+                });
             }
             delete action.context.notifications;
+        }
+        if (action.help?.length) {
+            action.help = markup(action.help);
         }
         this.action.doAction(action);
     }
 
-    async onDeleteSelectedRecords() {
-    }
 };
 
 PurchaseListController.components = {
